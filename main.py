@@ -15,18 +15,8 @@ window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption('PyGame Drawing: Pac-Man and Elements')
 
 # Create game elements
-pacman1 = PacMan(320, 239, Direction.RIGHT)
-pacman2 = PacMan(345, 239, Direction.RIGHT)
-pacman2.toggle_mouth()
-pacman3 = PacMan(370, 239, Direction.LEFT)
-pacman4 = PacMan(395, 239, Direction.LEFT)
-pacman4.toggle_mouth()
-pacman5 = PacMan(420, 239, Direction.UP)
-pacman6 = PacMan(445, 239, Direction.UP)
-pacman6.toggle_mouth()
-pacman7 = PacMan(270, 239, Direction.DOWN)
-pacman8 = PacMan(295, 239, Direction.DOWN)
-pacman8.toggle_mouth()
+pacman = PacMan(320, 239, Direction.RIGHT)
+pacman.start()
 
 maze = Maze()
 print(maze.maze_data.get_center(14, 10))
@@ -52,6 +42,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            pacman.stop()
 
     window.fill((0, 0, 0))  # Clear screen with black background
 
@@ -59,14 +50,8 @@ while running:
     # pacman.toggle_mouth()
 
     # Draw game elements
-    pacman1.draw(window)
-    pacman2.draw(window)
-    pacman3.draw(window)
-    pacman4.draw(window)
-    pacman5.draw(window)
-    pacman6.draw(window)
-    pacman7.draw(window)
-    pacman8.draw(window)
+    pacman.draw(window)
+
     for ghost in ghosts:
         ghost.draw(window)
     maze.draw(window)

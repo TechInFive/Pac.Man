@@ -1,13 +1,20 @@
 import math
+import time
 import pygame
+import threading
 from Direction import Direction
 
 from constants import BACKGROUND_COLOR, PAC_MAN_COLOR, SCALE
 
 PAC_MAN_RADIUS = 6 * SCALE
+PAC_MAN_INTERVAL = 0.15 # 100ms
+PAC_MAN_STEP = 2 * SCALE
 
-class PacMan:
+class PacMan(threading.Thread):
     def __init__(self, x, y, direction):
+        super().__init__()
+        self.running = False
+
         self.radius = PAC_MAN_RADIUS
         self.x = x
         self.y = y
@@ -19,8 +26,33 @@ class PacMan:
         self.mouth_open = False  # Indicates whether the mouth is open or closed
         self.change_direction(direction)
 
+    def start(self):
+        self.running = True
+        super().start()
+
+    def stop(self):
+        self.running = False
+
+    def run(self):
+        while self.running:
+            self.toggle_mouth()
+            self.move()
+            time.sleep(PAC_MAN_INTERVAL)
+
     def toggle_mouth(self):
         self.mouth_open = not self.mouth_open
+
+    def move(self):
+        # Logic to move PacMan
+        match self.direction:
+            case Direction.RIGHT:
+                self.x += PAC_MAN_STEP
+            case Direction.DOWN:
+                self.y += PAC_MAN_STEP
+            case Direction.LEFT:
+                self.x -= PAC_MAN_STEP
+            case Direction.UP:
+                self.y -= PAC_MAN_STEP
 
     def change_direction(self, new_direction):
         match new_direction:
