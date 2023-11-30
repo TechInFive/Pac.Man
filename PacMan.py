@@ -7,7 +7,7 @@ from Direction import Direction
 from constants import BACKGROUND_COLOR, PAC_MAN_COLOR, SCALE
 
 PAC_MAN_RADIUS = 6 * SCALE
-PAC_MAN_INTERVAL = 0.15 # 100ms
+PAC_MAN_INTERVAL = 0.15 # 150ms
 PAC_MAN_STEP = 2 * SCALE
 
 class PacMan(threading.Thread):

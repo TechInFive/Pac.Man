@@ -1,10 +1,19 @@
+import time
 import pygame
+import threading
+
 from Direction import Direction
 
-from constants import BACKGROUND_COLOR, SCALE
+from constants import SCALE
 
-class Ghost:
+GHOST_INTERVAL = 0.2 # 200ms
+GHOST_STEP = 2 * SCALE
+
+class Ghost(threading.Thread):
     def __init__(self, x, y, color, width, height):
+        super().__init__()
+        self.running = False
+
         self.x = x
         self.y = y
         self.color = color
@@ -14,6 +23,34 @@ class Ghost:
         self.height = height
         self.move_state = 0
         self.direction = Direction.RIGHT
+
+    def start(self):
+        self.running = True
+        super().start()
+
+    def stop(self):
+        self.running = False
+
+    def run(self):
+        while self.running:
+            self.wiggle()
+            self.move()
+            time.sleep(GHOST_INTERVAL)
+
+    def wiggle(self):
+        self.move_state = 0 if self.move_state == 1 else 1
+
+    def move(self):
+        # Logic to move PacMan
+        match self.direction:
+            case Direction.RIGHT:
+                self.x += GHOST_STEP
+            case Direction.DOWN:
+                self.y += GHOST_STEP
+            case Direction.LEFT:
+                self.x -= GHOST_STEP
+            case Direction.UP:
+                self.y -= GHOST_STEP
 
     def draw(self, screen):
         # head

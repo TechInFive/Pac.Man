@@ -19,22 +19,15 @@ pacman = PacMan(320, 239, Direction.RIGHT)
 pacman.start()
 
 maze = Maze()
-print(maze.maze_data.get_center(14, 10))
-print(maze.maze_data.get_center(12, 13))
-print(maze.maze_data.get_center(14, 13))
-print(maze.maze_data.get_center(16, 13))
 
 ghosts = [
-    Ghost(295, 305, (255, 192, 203), maze.maze_data.cell_width, maze.maze_data.cell_height),  # Red ghost
-    Ghost(345, 305, (255, 215, 0), maze.maze_data.cell_width, maze.maze_data.cell_height),  # Red ghost
-    Ghost(370, 305, (255, 0, 0), maze.maze_data.cell_width, maze.maze_data.cell_height),  # Gold ghost
+    Ghost(295, 305, (255, 192, 203), maze.maze_data.cell_width, maze.maze_data.cell_height),  # Pink ghost
+    Ghost(345, 305, (255, 215, 0), maze.maze_data.cell_width, maze.maze_data.cell_height),  # Gold ghost
+    Ghost(370, 305, (255, 0, 0), maze.maze_data.cell_width, maze.maze_data.cell_height),  # Red ghost
     Ghost(420, 305, (0, 255, 255), maze.maze_data.cell_width, maze.maze_data.cell_height),  # Aque ghost
 ]
-ghosts[1].move_state = 1
-ghosts[1].direction = Direction.DOWN
-ghosts[2].direction = Direction.LEFT
-ghosts[3].move_state = 1
-ghosts[3].direction = Direction.UP
+for ghost in ghosts:
+    ghost.start()
 
 # Game loop
 running = True
@@ -43,6 +36,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             pacman.stop()
+            for ghost in ghosts:
+                ghost.stop()
 
     window.fill((0, 0, 0))  # Clear screen with black background
 
