@@ -20,7 +20,7 @@ class Maze:
             [1, 2, 1, 1, 2, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 2, 1, 1, 2, 1],
             [1, 2, 1, 1, 2, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 2, 1, 1, 2, 1],
             [1, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 1],
-            [1, 2, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 2, 1],
+            [1, 2, 1, 1, 1, 1, 2, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 2, 1, 1, 1, 1, 2, 1],
             [1, 2, 1, 1, 1, 1, 2, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 2, 1, 1, 1, 1, 2, 1],
             [1, 2, 1, 1, 1, 1, 2, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 2, 1, 1, 1, 1, 2, 1],
             [1, 2, 2, 2, 2, 2, 2, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 2, 2, 2, 2, 2, 2, 1],
@@ -49,6 +49,7 @@ class Maze:
         self.pellet_color = PELLET_COLOR
 
     def draw_pellet(self, screen, col, row):
+        pass
         pygame.draw.circle(screen, self.pellet_color, self.maze_data.get_center(col, row), PELLET_SIZE)
 
     def draw(self, screen):
@@ -58,3 +59,17 @@ class Maze:
                     self.maze_wall.draw_wall(screen, col, row)
                 elif self.maze_data.is_pellet(col, row):
                     self.draw_pellet(screen, col, row)
+
+    def pac_man_start_point(self):
+        return self.maze_data.get_center(14, 22)
+
+    def ghost_start_points(self):
+        return [
+            self.maze_data.get_center(12, 12),
+            self.maze_data.get_center(15, 12),
+            self.maze_data.get_center(12, 14), 
+            self.maze_data.get_center(15, 14)
+        ]
+
+    def ghost_size(self):
+        return (self.maze_data.cell_width, self.maze_data.cell_height)
