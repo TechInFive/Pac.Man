@@ -1,29 +1,64 @@
 import math
+import time
 import pygame
 from Direction import Direction
+from GameCharacter import GameCharacter
 
 from constants import BACKGROUND_COLOR, PAC_MAN_COLOR, SCALE
 
 PAC_MAN_RADIUS = 6 * SCALE
+PAC_MAN_INTERVAL = 0.15 # 150ms
+PAC_MAN_STEP = 2 * SCALE
 
-class PacMan:
+class PacMan(GameCharacter):
     def __init__(self, x, y, direction):
+        super().__init__(x, y, direction)
+
         self.radius = PAC_MAN_RADIUS
-        self.x = x
-        self.y = y
-        self.pacman_rect = pygame.Rect(self.x - self.radius, self.y - self.radius, 2 * self.radius, 2 * self.radius)
+        # self.pacman_rect = pygame.Rect(self.x - self.radius, self.y - self.radius, 2 * self.radius, 2 * self.radius)
 
         self.color = PAC_MAN_COLOR
         self.eye_color = BACKGROUND_COLOR
+        self.step = PAC_MAN_STEP
 
-        self.mouth_open = False  # Indicates whether the mouth is open or closed
-        self.change_direction(direction)
+        self.mouth_open = False
+
+        self.instruction = None
+
+    def run(self):
+        self.apply_direction()
+
+        while self.running:
+            self.toggle_mouth()
+            self.move()
+            self.maze_data.update_player_trail(self.at_cell())
+
+            time.sleep(PAC_MAN_INTERVAL)
 
     def toggle_mouth(self):
         self.mouth_open = not self.mouth_open
 
-    def change_direction(self, new_direction):
-        match new_direction:
+    def make_a_decision(self):
+        (col, row) = self.at_cell()
+        if self.instruction is not None:
+            (next_col, next_row) = self.next_cell(col, row, self.instruction)
+            if not self.maze_data.is_wall(next_col, next_row):
+                return self.instruction
+
+        if self.face_a_wall():
+            match self.direction:
+                case Direction.RIGHT:
+                    return Direction.LEFT
+                case Direction.DOWN:
+                    return Direction.UP
+                case Direction.LEFT:
+                    return Direction.RIGHT
+                case Direction.UP:
+                    return Direction.DOWN
+        return None
+
+    def apply_direction(self):
+        match self.direction:
             case Direction.RIGHT:
                 self.eye_offset_x = 0
                 self.eye_offset_y = - self.radius // 2
@@ -52,8 +87,6 @@ class PacMan:
                 self.mouth_close_end_angle = 91
                 self.mouth_open_start_angle = 60
                 self.mouth_open_end_angle = 120
-
-        self.direction = new_direction
 
     def draw_filled_pie(self, screen, color, center, radius, start_degree, end_degree, num_segments):
         # Convert angles to radians and calculate the angle step for each segment

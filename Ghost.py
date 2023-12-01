@@ -1,19 +1,68 @@
+import random
+import time
 import pygame
+
 from Direction import Direction
+from GameCharacter import GameCharacter
 
-from constants import BACKGROUND_COLOR, SCALE
+from constants import SCALE
 
-class Ghost:
-    def __init__(self, x, y, color, width, height):
-        self.x = x
-        self.y = y
+GHOST_INTERVAL = 0.2 # 200ms
+GHOST_STEP = 2 * SCALE
+
+class Ghost(GameCharacter):
+    def __init__(self, x, y, color, direction):
+        super().__init__(x, y, direction)
+
         self.color = color
         self.eye_color = (0, 0, 0)
         self.eye_ball_color = (255, 255, 255)
-        self.width = width
-        self.height = height
         self.move_state = 0
-        self.direction = Direction.RIGHT
+        self.step = GHOST_STEP
+
+    def start(self, maze_data):
+        super().start(maze_data)
+
+        self.width = maze_data.cell_width
+        self.height = maze_data.cell_height
+
+
+    def run(self):
+        self.apply_direction()
+
+        while self.running:
+            self.wiggle()
+            self.move()
+            time.sleep(GHOST_INTERVAL)
+
+    def wiggle(self):
+        self.move_state = 0 if self.move_state == 1 else 1
+
+    def make_a_decision(self):
+        options = self.get_options()
+
+        # First check if Pac-Man is nearby
+        for direction in options:
+            if self.is_player_in_direction(direction):
+                return direction
+
+        # 75% of chance keep moving
+        if self.direction in options:
+            if random.random() < 0.75:
+                return None
+
+        # Randomly choose a direction
+        return random.choice(options)
+
+    def is_player_in_direction(self, direction):
+        (col, row) = self.at_cell()
+
+        while not self.maze_data.is_wall(col, row):
+            (col, row) = self.next_cell(col, row, direction)
+            if (col, row) in self.maze_data.player_trail:
+                return True
+
+        return False
 
     def draw(self, screen):
         # head
