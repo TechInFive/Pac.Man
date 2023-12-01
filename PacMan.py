@@ -15,7 +15,6 @@ class PacMan(GameCharacter):
         super().__init__(x, y, direction)
 
         self.radius = PAC_MAN_RADIUS
-        # self.pacman_rect = pygame.Rect(self.x - self.radius, self.y - self.radius, 2 * self.radius, 2 * self.radius)
 
         self.color = PAC_MAN_COLOR
         self.eye_color = BACKGROUND_COLOR

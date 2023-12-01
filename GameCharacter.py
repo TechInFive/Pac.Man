@@ -20,17 +20,14 @@ class GameCharacter(threading.Thread):
         self.running = False
 
     def start(self, maze_data):
-        self.running = True
         self.maze_data = maze_data
 
         (col, row) = self.maze_data.at_cell(self.x, self.y)
         self.col = col
         self.row = row
 
+        self.running = True
         super().start()
-
-    def stop(self):
-        self.running = False
 
     def stop(self):
         self.running = False
@@ -96,7 +93,6 @@ class GameCharacter(threading.Thread):
         (col, row) = self.maze_data.at_cell(self.x, self.y)
         self.col = col
         self.row = row
-
 
     def make_a_decision(self):
         return None
