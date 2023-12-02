@@ -1,3 +1,4 @@
+import random
 from constants import MARGIN_X, MARGIN_Y, MAZE_HEIGHT, MAZE_WIDTH
 
 class MazeData:
@@ -10,7 +11,21 @@ class MazeData:
         self.cell_width = MAZE_WIDTH // self.cols 
         self.cell_height = MAZE_HEIGHT // self.rows 
 
+        self.initialize_cells()
+
         self.player_trail = []
+        self.player_direction = None
+
+    def initialize_cells(self):
+        self.path_cells = []
+        self.empty_cells = []
+        for row in range(self.rows):
+            for col in range(self.cols):
+                if not self.is_wall(col, row):
+                    self.path_cells.append((col, row))                    
+
+                if not self.is_pellet(col, row):
+                    self.empty_cells.append((col, row))                    
 
     def is_wall(self, col, row):
         return self.maze_data[row][col] == 1
@@ -21,6 +36,13 @@ class MazeData:
     def remove_pellet(self, col, row):
         if self.is_pellet(col, row):
             self.maze_data[row][col] = 0
+            self.empty_cells.append((col, row))
+
+    def get_random_path_cell(self):
+        return random.choice(self.path_cells)
+
+    def get_random_empty_cell(self):
+        return random.choice(self.empty_cells)
 
     def get_cell_x_y(self, col, row):
         return (MARGIN_X + self.cell_width * col, MARGIN_Y + self.cell_height * row)
@@ -34,7 +56,9 @@ class MazeData:
         row = (y - MARGIN_Y ) // self.cell_height
         return (col, row)
 
-    def update_player_trail(self, current_cell):
+    def update_player_trail(self, current_cell, direction):
+        self.player_direction = direction
+
         if current_cell in self.player_trail:
             return
         self.player_trail.append(current_cell)

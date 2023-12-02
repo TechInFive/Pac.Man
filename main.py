@@ -1,10 +1,15 @@
 import pygame
 import sys
+
+from Cruiser import Cruiser
 from Direction import Direction
 from Ghost import Ghost
 from Maze import Maze
+from Planner import Planner
+from Sniffer import Sniffer
 
 from PacMan import PacMan
+from Trickster import Trickster
 from constants import WINDOW_HEIGHT, WINDOW_WIDTH
 
 # Initialize PyGame
@@ -19,18 +24,18 @@ maze = Maze()
 
 ghost_start_points = maze.ghost_start_points()
 ghosts = [
-    Ghost(ghost_start_points[0][0], ghost_start_points[0][1], (255, 192, 203), Direction.RIGHT),
-    Ghost(ghost_start_points[1][0], ghost_start_points[1][1], (255, 215, 0), Direction.DOWN),
-    Ghost(ghost_start_points[2][0], ghost_start_points[2][1], (255, 0, 0), Direction.UP),
-    Ghost(ghost_start_points[3][0], ghost_start_points[3][1], (0, 255, 255), Direction.LEFT)
+    Cruiser(ghost_start_points[0][0], ghost_start_points[0][1], (255, 192, 203)),
+    Sniffer(ghost_start_points[1][0], ghost_start_points[1][1], (255, 215, 0)),
+    Planner(ghost_start_points[2][0], ghost_start_points[2][1], (255, 0, 0)),
+    Trickster(ghost_start_points[3][0], ghost_start_points[3][1], (0, 255, 255))
 ]
 
 for ghost in ghosts:
-    ghost.start(maze.maze_data)
+    ghost.start(maze.maze_data, Direction.RIGHT)
 
 (pacman_x, pacman_y) = maze.pac_man_start_point()
-pacman = PacMan(pacman_x, pacman_y, Direction.RIGHT)
-pacman.start(maze.maze_data)
+pacman = PacMan(pacman_x, pacman_y)
+pacman.start(maze.maze_data, Direction.RIGHT)
 
 # Game loop
 running = True

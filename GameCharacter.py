@@ -10,17 +10,17 @@ DIRECTIONS = {
 }
 
 class GameCharacter(threading.Thread):
-    def __init__(self, x, y, direction):
+    def __init__(self, x, y):
         super().__init__()
         self.x = x
         self.y = y
-        self.direction = direction
         self.step = 0
 
         self.running = False
 
-    def start(self, maze_data):
+    def start(self, maze_data, direction):
         self.maze_data = maze_data
+        self.direction = direction
 
         (col, row) = self.maze_data.at_cell(self.x, self.y)
         self.col = col
@@ -79,7 +79,7 @@ class GameCharacter(threading.Thread):
 
     def move(self):
         self.check_new_direction()
-
+ 
         match self.direction:
             case Direction.RIGHT:
                 self.x += self.step

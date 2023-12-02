@@ -11,8 +11,8 @@ PAC_MAN_INTERVAL = 0.15 # 150ms
 PAC_MAN_STEP = 2 * SCALE
 
 class PacMan(GameCharacter):
-    def __init__(self, x, y, direction):
-        super().__init__(x, y, direction)
+    def __init__(self, x, y):
+        super().__init__(x, y)
 
         self.radius = PAC_MAN_RADIUS
 
@@ -30,7 +30,7 @@ class PacMan(GameCharacter):
         while self.running:
             self.toggle_mouth()
             self.move()
-            self.maze_data.update_player_trail(self.at_cell())
+            self.maze_data.update_player_trail(self.at_cell(), self.direction)
 
             time.sleep(PAC_MAN_INTERVAL)
 
