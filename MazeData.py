@@ -21,11 +21,17 @@ class MazeData:
         self.empty_cells = []
         for row in range(self.rows):
             for col in range(self.cols):
-                if not self.is_wall(col, row):
-                    self.path_cells.append((col, row))                    
+                match self.maze_data[row][col]:
+                    case 0:
+                        self.empty_cells.append((col, row))                    
+                        self.path_cells.append((col, row))                    
+                    case 1:
+                        pass
+                    case 2:
+                        self.path_cells.append((col, row))                    
 
-                if not self.is_pellet(col, row):
-                    self.empty_cells.append((col, row))                    
+    def is_empty(self, col, row):
+        return self.maze_data[row][col] == 0
 
     def is_wall(self, col, row):
         return self.maze_data[row][col] == 1
@@ -37,6 +43,10 @@ class MazeData:
         if self.is_pellet(col, row):
             self.maze_data[row][col] = 0
             self.empty_cells.append((col, row))
+
+    def add_pellet(self, col, row):
+        self.empty_cells.remove((col, row))
+        self.maze_data[row][col] = 2
 
     def get_random_path_cell(self):
         return random.choice(self.path_cells)
