@@ -1,6 +1,5 @@
 import random
 import time
-from GameCharacter import DIRECTIONS
 from Ghost import GHOST_INTERVAL, Ghost
 
 class Trickster(Ghost):

@@ -1,5 +1,3 @@
-import random
-import time
 import pygame
 from MazeData import MazeData
 from MazeWall import MazeWall
@@ -7,7 +5,6 @@ from MazeWall import MazeWall
 from constants import GAME_OVER, PELLET_COLOR, SCALE
 
 PELLET_SIZE = 2 * SCALE
-MAZE_INTERVAL = 0.1 # 100ms
 
 class Maze():
     def __init__(self):
@@ -53,6 +50,7 @@ class Maze():
 
         self.player_score = 0
         self.ghost_positions = {}
+        self.player_position = None
 
     def handle_event(self, event):
         character = event.message[0]
@@ -61,14 +59,18 @@ class Maze():
         direction = event.message[3]
 
         if character == "PacMan":
-            if (col, row) in self.ghost_positions:
-                event = pygame.event.Event(GAME_OVER, message=(col, row))
-                pygame.event.post(event)
-
+            self.player_position = (col, row)
             self.check_pellet(col, row)
             self.maze_data.update_player_trail((col, row), direction)
         else:
             self.ghost_positions[character] = (col, row)
+
+        self.check_game()
+
+    def check_game(self):        
+        if self.player_position in self.ghost_positions.values():
+            event = pygame.event.Event(GAME_OVER, message=self.player_position)
+            pygame.event.post(event)
 
     def check_pellet(self, col, row):        
         if not self.maze_data.is_pellet(col, row):

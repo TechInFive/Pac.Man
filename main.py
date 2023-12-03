@@ -3,7 +3,6 @@ import sys
 
 from Cruiser import Cruiser
 from Direction import Direction
-from Ghost import Ghost
 from Maze import Maze
 from Planner import Planner
 from Sniffer import Sniffer
