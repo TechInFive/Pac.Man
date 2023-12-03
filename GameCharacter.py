@@ -1,6 +1,9 @@
 import threading
 
+import pygame
+
 from Direction import Direction
+from constants import MOVE_EVENT
 
 DIRECTIONS = {
     Direction.RIGHT: (1, 0),
@@ -50,18 +53,16 @@ class GameCharacter(threading.Thread):
         self.x = center_x
         self.y = center_y
 
-    def face_a_wall(self):
+    def face_a_wall(self, direction):
         (col, row) = self.at_cell()
-        (next_col, next_row) = self.next_cell(col, row, self.direction)
+        (next_col, next_row) = self.next_cell(col, row, direction)
         return self.maze_data.is_wall(next_col, next_row)
 
     def get_options(self):
-        (col, row) = self.at_cell()
         options = []
 
         for direction in Direction:
-            (new_col, new_row) = self.next_cell(col, row, direction)
-            if not self.maze_data.is_wall(new_col, new_row):
+            if not self.face_a_wall(direction):
                 options.append(direction)
         return options
 
@@ -91,11 +92,17 @@ class GameCharacter(threading.Thread):
                 self.y -=  self.step
 
         (col, row) = self.maze_data.at_cell(self.x, self.y)
-        self.col = col
-        self.row = row
+        if col != self.col or row != self.row:
+            self.col, self.row = col, row
+            self.on_enter_new_cell()
 
     def make_a_decision(self):
         return None
 
     def apply_direction(self):
         pass
+
+    def on_enter_new_cell(self):
+        event = pygame.event.Event(MOVE_EVENT, message=(self.__class__.__name__, self.col, self.row, self.direction))
+        pygame.event.post(event)
+

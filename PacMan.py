@@ -30,21 +30,19 @@ class PacMan(GameCharacter):
         while self.running:
             self.toggle_mouth()
             self.move()
-            self.maze_data.update_player_trail(self.at_cell(), self.direction)
 
             time.sleep(PAC_MAN_INTERVAL)
 
     def toggle_mouth(self):
         self.mouth_open = not self.mouth_open
 
-    def make_a_decision(self):
-        (col, row) = self.at_cell()
-        if self.instruction is not None:
-            (next_col, next_row) = self.next_cell(col, row, self.instruction)
-            if not self.maze_data.is_wall(next_col, next_row):
-                return self.instruction
+    def check_new_direction(self):
+        new_direction = self.make_a_decision()
+        if new_direction is not None:
+            self.change_direction(new_direction)
 
-        if self.face_a_wall():
+    def make_a_decision(self):
+        if self.face_a_wall(self.direction):
             match self.direction:
                 case Direction.RIGHT:
                     return Direction.LEFT
@@ -86,6 +84,15 @@ class PacMan(GameCharacter):
                 self.mouth_close_end_angle = 91
                 self.mouth_open_start_angle = 60
                 self.mouth_open_end_angle = 120
+
+    def verify_instruction(self, instruction):
+        if instruction is not None and instruction != self.direction and not self.face_a_wall(instruction):
+            return True
+        return False
+
+    def receive_instruction(self, instruction):
+        if self.verify_instruction(instruction):
+            self.change_direction(instruction)
 
     def draw_filled_pie(self, screen, color, center, radius, start_degree, end_degree, num_segments):
         # Convert angles to radians and calculate the angle step for each segment
