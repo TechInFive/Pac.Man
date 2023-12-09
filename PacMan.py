@@ -4,7 +4,7 @@ import pygame
 from Direction import Direction
 from GameCharacter import GameCharacter
 
-from constants import BACKGROUND_COLOR, PAC_MAN_COLOR, SCALE
+from constants import BACKGROUND_COLOR, MOVE_EVENT, PAC_MAN_COLOR, SCALE
 
 PAC_MAN_RADIUS = 6 * SCALE
 PAC_MAN_INTERVAL = 0.15 # 150ms
@@ -85,14 +85,21 @@ class PacMan(GameCharacter):
                 self.mouth_open_start_angle = 60
                 self.mouth_open_end_angle = 120
 
-    def verify_instruction(self, instruction):
-        if instruction is not None and instruction != self.direction and not self.face_a_wall(instruction):
-            return True
-        return False
-
     def receive_instruction(self, instruction):
         if self.verify_instruction(instruction):
             self.change_direction(instruction)
+
+    def verify_instruction(self, instruction):
+        if (instruction is not None
+            and instruction != self.direction
+            and not self.face_a_wall(instruction)):
+            return True
+        return False
+
+    def on_enter_new_cell(self):
+        event = pygame.event.Event(MOVE_EVENT, message=(self.__class__.__name__, self.col, self.row, self.direction))
+        pygame.event.post(event)
+        pass
 
     def draw_filled_pie(self, screen, color, center, radius, start_degree, end_degree, num_segments):
         # Convert angles to radians and calculate the angle step for each segment
